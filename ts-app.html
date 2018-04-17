@@ -107,11 +107,14 @@
                 const docFragment = document.createDocumentFragment();
 
                 document.title = doc.title;
-                this.innerHTML = '';
 
-                while (app.firstChild) {
-                    docFragment.appendChild(app.firstChild);
-                }
+                [...app.children].forEach(child => {
+                    docFragment.appendChild(child);
+                });
+
+                [...this.children].forEach(child => {
+                    this.removeChild(child);
+                });
 
                 this.appendChild(document.importNode(docFragment, true));
 
