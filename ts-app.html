@@ -118,7 +118,9 @@
 
                 this.appendChild(document.importNode(docFragment, true));
 
-                ga('send', 'pageview', this._route);
+                if (typeof ga === 'function') {
+                    ga('send', 'pageview', this._route);
+                }
             }
         }
 
