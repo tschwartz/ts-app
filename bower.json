@@ -1,6 +1,6 @@
 {
   "name": "ts-app",
-  "description": "The app",
+  "description": "A Polymer app designed to give a multi-page web site more of a single page app experience.",
   "main": "ts-app.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.6.0",

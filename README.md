@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/tschwartz/ts-app.svg?branch=master)](https://travis-ci.org/tschwartz/ts-app)
 
-The app
+A Polymer app designed to give a multi-page web site more of a single page app experience.
 
 ## Install the Polymer-CLI
 
