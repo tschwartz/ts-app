@@ -15,34 +15,35 @@
 
     <test-fixture id="BasicTestFixture">
       <template>
-        <ts-app></ts-app>
-      </template>
-    </test-fixture>
-
-    <test-fixture id="ChangedPropertyTestFixture">
-      <template>
-        <ts-app prop1="new-prop1"></ts-app>
+        <ts-app>
+          <h1>First Test</h1>
+        </ts-app>
       </template>
     </test-fixture>
 
     <script>
       suite('ts-app', () => {
 
-        test('instantiating the element with default properties works', () => {
+        test('the app contains the initial content', () => {
           const element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'ts-app');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello ts-app!');
+          const child = [...element.children][0];
+
+          assert.equal(child.textContent, 'First Test');
         });
 
-        test('setting a property on the element works', () => {
-          // Create a test fixture
-          const element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+        test('the app contains the new page content', () => {
+          const element = fixture('BasicTestFixture');
+          const doc = document.createDocumentFragment();
+          const app = new TsApp();
+          const heading = document.createElement('h1');
+
+          heading.textContent = 'Second Test';
+          app.appendChild(heading);
+          doc.appendChild(app);
+
+          element._updatePartial(doc);
+
+          assert.equal([...element.children][0].textContent, 'Second Test');
         });
 
       });

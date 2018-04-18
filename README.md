@@ -1,5 +1,7 @@
 # \<ts-app\>
 
+[![Build Status](https://travis-ci.org/tschwartz/ts-app.svg?branch=master)](https://travis-ci.org/tschwartz/ts-app)
+
 The app
 
 ## Install the Polymer-CLI
