@@ -1,0 +1,129 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../app-route/app-location.html">
+<link rel="import" href="../app-route/app-route.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id="ts-app">
+    <script>
+        /**
+         * `ts-app`
+         * The app
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class TsApp extends Polymer.Element {
+            static get is() { return 'ts-app'; }
+
+            static get properties() {
+                return {
+                    /**
+                     * Whether it's the initial page load
+                     */
+                    _initial: {
+                        type: Boolean,
+                        value: true
+                    },
+
+                    /**
+                     * The URL to the HTML partial
+                     */
+                    _partialUrl: String,
+
+                    /**
+                    * Route object used by `<app-route>`
+                    */
+                    _route: Object,
+
+                    /**
+                    * Route Data object used by `<app-route>`
+                    */
+                    _routeData: Object,
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_routeChanged(_route.*)'
+                ];
+            }
+
+            static get template() {
+                return Polymer.html`
+                    <style>
+                        :host {
+                            display: block;
+                        }
+                    </style>
+                    <app-location route="{{ _route }}"></app-location>
+                    <app-route
+                        pattern="/:page/"
+                        route="{{ _route }}"
+                        data="{{ _routeData }}"
+                    ></app-route>
+                    <iron-ajax
+                        auto
+                        url="{{ _partialUrl }}"
+                        handle-as="document"
+                        on-response="_onAjaxEvent"
+                        on-error="_onAjaxEvent">
+                    </iron-ajax>
+                    <slot></slot>
+                `;
+            }
+
+            /**
+             * Observe all changes to `_route.*`.
+             *
+             */
+            _routeChanged(route) {
+                const { base } = route;
+
+                this._partialUrl = base.path;
+            }
+
+            /**
+             * Iron AJAX success handler
+             *
+             * @param {Object} event Event object
+             */
+            _onAjaxEvent(event) {
+                if (this._initial) {
+                    this._initial = false;
+                    return;
+                }
+
+                this._updatePartial(event.detail.response);
+            }
+
+            /**
+             * Update document partial
+             *
+             * @param {Document} doc Document object
+             */
+            _updatePartial(doc) {
+                const app = doc.querySelector('ts-app');
+                const docFragment = document.createDocumentFragment();
+
+                document.title = doc.title;
+
+                [...app.children].forEach(child => {
+                    docFragment.appendChild(child);
+                });
+
+                [...this.children].forEach(child => {
+                    this.removeChild(child);
+                });
+
+                this.appendChild(document.importNode(docFragment, true));
+
+                if (typeof ga === 'function') {
+                    ga('send', 'pageview', this._route);
+                }
+            }
+        }
+
+        window.customElements.define(TsApp.is, TsApp);
+    </script>
+</dom-module>
